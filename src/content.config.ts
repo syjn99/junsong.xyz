@@ -44,6 +44,8 @@ const posts = defineCollection({
         feature_image_alt: z.string().optional(),
         feature_image_caption: z.string().optional(),
         featured: z.boolean().default(false),
+        // Slug of the same post in the other language (for the EN/KO switch).
+        translation: z.string().optional(),
         draft: z.boolean().default(false),
     }),
 });

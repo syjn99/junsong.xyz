@@ -15,14 +15,11 @@ async function socialImage(src: string) {
     return { url: imgUrl(src, 'xl'), width: 1200, height: Math.round((dims.height * 1200) / dims.width) };
 }
 
-export function collectionSeo(page: number, opts: { channel?: boolean } = {}): Seo {
-    // Ghost titles routes.yaml collections/channels "(Page N)" even on page 1,
-    // except the site root.
-    const title = opts.channel || page > 1 ? `${site.title} (Page ${page})` : site.title;
+export function collectionSeo(page: number): Seo {
     return {
-        title,
-        description: page === 1 && !opts.channel ? site.description : undefined,
-        image: page === 1 && !opts.channel ? site.coverImage : undefined,
+        title: pagedTitle(site.title, page),
+        description: page === 1 ? site.description : undefined,
+        image: page === 1 ? site.coverImage : undefined,
     };
 }
 

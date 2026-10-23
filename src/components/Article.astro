@@ -6,6 +6,7 @@ import PostCard from './PostCard.astro';
 import { getPosts, postClass, type Post } from '../lib/posts';
 import { postSeo } from '../lib/seo';
 import { formatDate, imgUrl, isoDate } from '../lib/ghost';
+import { ui } from '../lib/i18n';
 import { site } from '../site.config';
 
 interface Props {
@@ -19,12 +20,16 @@ const bodyClass = isPost
     ? ['post-template', ...post.classTags.map((t) => `tag-${t}`)].join(' ')
     : `page-template page-${post.slug}`;
 
+// Latest posts in the same language.
 const related =
-    isPost && site.theme.showRelatedArticles ? (await getPosts()).filter((p) => p.url !== post.url).slice(0, 4) : [];
+    isPost && site.theme.showRelatedArticles
+        ? (await getPosts({ lang: post.lang })).filter((p) => p.url !== post.url).slice(0, 4)
+        : [];
+const alternates = post.translation && post.lang ? { [post.lang === 'ko' ? 'en' : 'ko']: post.translation } : undefined;
 const authorUrl = `/author/${site.author.slug}/`;
 ---
 
-<Base bodyClass={bodyClass} seo={seo} lightbox>
+<Base bodyClass={bodyClass} seo={seo} lang={post.lang} alternates={alternates} translated={!!alternates} lightbox>
     <main class="gh-main">
         <article class={`gh-article ${postClass(post)}`}>
             {
@@ -98,7 +103,7 @@ const authorUrl = `/author/${site.author.slug}/`;
         related.length > 0 && (
             <section class="gh-container is-grid gh-outer">
                 <div class="gh-container-inner gh-inner">
-                    <h2 class="gh-container-title">Read more</h2>
+                    <h2 class="gh-container-title">{ui[post.lang ?? 'en'].readMore}</h2>
                     <div class="gh-feed">
                         {related.map((p) => (
                             <PostCard post={p} lazyLoad withTags={false} />

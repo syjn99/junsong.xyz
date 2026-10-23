@@ -8,6 +8,8 @@ path from the Ghost site is preserved.
 
 ## Writing a post
 
+Full guide (Korean): [docs/writing.md](docs/writing.md)
+
 ```bash
 nvm use                     # Node version from .nvmrc
 npm install                 # first time only
@@ -27,11 +29,21 @@ Front matter:
 | `feature_image` | optional; e.g. `/content/images/2026/11/cover.jpg` (file in `public/content/images/…`) or an external URL |
 | `feature_image_caption` | optional, HTML allowed |
 | `slug` | optional; defaults to the file name |
+| `translation` | optional; slug of the same post in the other language, e.g. `translation: my-post-ko` in `en/my-post.md`. Setting it on either side is enough |
 | `draft` | `true` keeps it out of the production build |
 
 Images go in `public/content/images/<year>/<month>/` and are referenced as
 `/content/images/<year>/<month>/<file>`. Resized/WebP variants for cards are
 generated at build time.
+
+## Languages
+
+English is the default and lives at the root (`/`, `/my-post/`, `/tag/x/`);
+Korean lives under `/ko/`. The EN | KO switch in the header goes to the same
+post in the other language when a `translation` is set, otherwise to that
+language's home or tag page. Home, tag pages, "Read more" and search only show
+posts in the current language. Translations of migrated Ghost posts are listed
+in `src/data/translations.json`.
 
 Publish by committing and pushing to `main`. GitHub Actions builds, runs the
 link/image checks (`npm run verify`) and deploys to GitHub Pages.

@@ -6,7 +6,8 @@ import { site } from '../site.config';
 export const GET: APIRoute = async () => {
     const posts = await getPosts();
     const pages = await getPages();
-    const tags = await getTags();
+    // Same set of tag pages as tag-routes.ts: every tag at /tag/x/, plus /ko/tag/x/ where Korean posts exist.
+    const tags = [...(await getTags()).map((t) => ({ ...t, url: `/tag/${t.slug}/` })), ...(await getTags('ko'))];
     const newest = posts[0]?.updatedAt ?? new Date();
 
     const urls: { loc: string; lastmod?: Date }[] = [
@@ -15,7 +16,6 @@ export const GET: APIRoute = async () => {
         ...pages.map((p) => ({ loc: p.url, lastmod: p.updatedAt })),
         ...posts.map((p) => ({ loc: p.url, lastmod: p.updatedAt })),
         ...tags.map((t) => ({ loc: t.url })),
-        { loc: '/ko/tag/retrospect/' },
         { loc: `/author/${site.author.slug}/` },
     ];
 

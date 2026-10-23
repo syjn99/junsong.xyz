@@ -49,6 +49,7 @@ tags: []
 # excerpt: "One-line summary for cards and social previews"
 # feature_image: /content/images/${month}/cover.jpg
 # feature_image_caption: "Photo by …"
+# translation: ${ko ? 'english-post-slug' : 'korean-post-slug'}   # same post in the other language
 draft: true
 ---
 

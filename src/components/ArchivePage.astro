@@ -1,5 +1,5 @@
 ---
-// tag.hbs / author.hbs, plus routes.yaml channels (no archive header)
+// tag.hbs / author.hbs
 import Base from '../layouts/Base.astro';
 import PostList from './PostList.astro';
 import FeatureImage from './FeatureImage.astro';
@@ -7,10 +7,11 @@ import Icon from './Icon.astro';
 import type { Post } from '../lib/posts';
 import type { Seo } from '../layouts/Base.astro';
 import { imgUrl } from '../lib/ghost';
+import type { Alternates, Lang } from '../lib/i18n';
 import { site } from '../site.config';
 
 interface Props {
-    kind: 'tag' | 'author' | 'channel';
+    kind: 'tag' | 'author';
     slug?: string;
     name?: string;
     description?: string;
@@ -19,19 +20,18 @@ interface Props {
     page: number;
     pages: number;
     seo: Seo;
+    // Archive URL without the /page/N/ suffix.
+    base: string;
+    lang?: Lang;
+    alternates?: Partial<Alternates>;
 }
-const { kind, slug, name, description, featureImage, posts, page, pages, seo } = Astro.props;
+const { kind, slug, name, description, featureImage, posts, page, pages, seo, base, lang, alternates } = Astro.props;
 const author = site.author;
-const bodyClass =
-    kind === 'channel'
-        ? page > 1
-            ? 'paged'
-            : ''
-        : [`${kind}-template`, `${kind}-${slug}`, page > 1 ? 'paged' : ''].filter(Boolean).join(' ');
+const bodyClass = [`${kind}-template`, `${kind}-${slug}`, page > 1 ? 'paged' : ''].filter(Boolean).join(' ');
 const sidebar = site.theme.showSidebar;
 ---
 
-<Base bodyClass={bodyClass} seo={seo}>
+<Base bodyClass={bodyClass} seo={seo} lang={lang} alternates={alternates}>
     <main class="gh-main gh-outer">
         {
             kind === 'tag' && (
@@ -73,6 +73,6 @@ const sidebar = site.theme.showSidebar;
             )
         }
 
-        <PostList posts={posts} showTitle={false} showMore={pages > 1} />
+        <PostList posts={posts} lang={lang} showTitle={false} moreHref={page < pages ? `${base}page/${page + 1}/` : undefined} />
     </main>
 </Base>

@@ -20,6 +20,7 @@ const { page, pages, posts } = Astro.props;
 <ArchivePage
     kind="author"
     slug={site.author.slug}
+    base={`/author/${site.author.slug}/`}
     posts={posts}
     page={page}
     pages={pages}

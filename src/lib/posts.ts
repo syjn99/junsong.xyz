@@ -1,9 +1,11 @@
 import { getCollection } from 'astro:content';
 import tagData from '../data/tags.json';
+import translationData from '../data/translations.json';
 import { site } from '../site.config';
 import { readingTime } from './reading-time.mjs';
+import { tagUrl, type Lang } from './i18n';
 
-export type Lang = 'en' | 'ko';
+export type { Lang };
 
 export interface Tag {
     slug: string;
@@ -31,25 +33,26 @@ export interface Post {
     primaryTag?: Tag;
     classTags: string[];
     readingTime: string;
+    // URL of the same post in the other language, if one exists.
+    translation?: string;
     publishedAt: Date;
     updatedAt: Date;
     metaTitle?: string;
     metaDescription?: string;
 }
 
-const tagsBySlug = new Map<string, Tag>(
-    (tagData as Omit<Tag, 'url'>[]).map((t) => [t.slug, { ...t, url: `/tag/${t.slug}/` }]),
-);
+const tagsBySlug = new Map<string, Omit<Tag, 'url'>>((tagData as Omit<Tag, 'url'>[]).map((t) => [t.slug, t]));
 
-function resolveTag(slug: string): Tag {
+// A tag links to its page in the given language: /tag/x/ or /ko/tag/x/.
+export function resolveTag(slug: string, lang?: Lang): Tag {
     let tag = tagsBySlug.get(slug);
     if (!tag) {
         // New tag introduced by a Markdown post: name it after the slug.
         const name = slug.replace(/(^|-)(\w)/g, (_, sep, c) => (sep ? ' ' : '') + c.toUpperCase());
-        tag = { slug, name, url: `/tag/${slug}/` };
+        tag = { slug, name };
         tagsBySlug.set(slug, tag);
     }
-    return tag;
+    return { ...tag, url: tagUrl(slug, lang) };
 }
 
 const stripTags = (html: string) =>
@@ -73,7 +76,7 @@ async function load(): Promise<Post[]> {
     if (cache) return cache;
 
     const legacy = (await getCollection('legacy')).map(({ data: d }): Post => {
-        const tags = d.tags.map(resolveTag);
+        const tags = d.tags.map((t) => resolveTag(t, d.lang));
         return {
             type: d.type,
             slug: d.slug,
@@ -89,7 +92,7 @@ async function load(): Promise<Post[]> {
             featured: d.featured,
             showTitleAndFeatureImage: d.show_title_and_feature_image,
             tags,
-            primaryTag: d.primary_tag ? resolveTag(d.primary_tag) : undefined,
+            primaryTag: d.primary_tag ? resolveTag(d.primary_tag, d.lang) : undefined,
             classTags: d.class_tags,
             readingTime: d.reading_time,
             publishedAt: d.published_at,
@@ -99,13 +102,19 @@ async function load(): Promise<Post[]> {
         };
     });
 
+    // en slug -> ko slug, from translations.json and `translation:` front matter.
+    const pairs = new Map<string, string>(Object.entries(translationData));
     const markdown = (await getCollection('posts', ({ data }) => import.meta.env.DEV || !data.draft)).map(
         (entry): Post => {
             const d = entry.data;
             const lang = entry.id.split('/')[0] as Lang;
             const slug = d.slug ?? entry.id.split('/').pop()!;
             const html = entry.rendered?.html ?? '';
-            const tags = d.tags.map(resolveTag);
+            const tags = d.tags.map((t) => resolveTag(t, lang));
+            if (d.translation) {
+                if (lang === 'en') pairs.set(slug, d.translation);
+                else pairs.set(d.translation, slug);
+            }
             return {
                 type: 'post',
                 slug,
@@ -136,6 +145,15 @@ async function load(): Promise<Post[]> {
         if (seen.has(p.url)) throw new Error(`Duplicate URL ${p.url} (slug "${p.slug}")`);
         seen.add(p.url);
     }
+    const urls = new Map(all.filter((p) => p.type === 'post').map((p) => [`${p.lang}/${p.slug}`, p]));
+    for (const [en, ko] of pairs) {
+        const a = urls.get(`en/${en}`);
+        const b = urls.get(`ko/${ko}`);
+        // A draft counterpart is missing from production builds; skip the link then.
+        if (!a || !b) continue;
+        a.translation = b.url;
+        b.translation = a.url;
+    }
     cache = all;
     return all;
 }
@@ -154,10 +172,11 @@ export async function getPages(): Promise<Post[]> {
     return (await load()).filter((p) => p.type === 'page');
 }
 
-export async function getTags(): Promise<Tag[]> {
-    const posts = await getPosts();
+// Tags used by posts in `lang` (all posts when omitted), linking to that language's tag pages.
+export async function getTags(lang?: Lang): Promise<Tag[]> {
+    const posts = await getPosts({ lang });
     const used = new Set(posts.flatMap((p) => p.tags.map((t) => t.slug)));
-    return [...used].map(resolveTag);
+    return [...used].map((slug) => resolveTag(slug, lang));
 }
 
 // Ghost's {{post_class}}

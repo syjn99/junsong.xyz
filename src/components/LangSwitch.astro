@@ -1,0 +1,74 @@
+---
+// EN | KO switch. On pages that exist in only one language (About, author)
+// the active side follows the visitor's last choice; see Base.astro.
+import { langs, type Alternates, type Lang } from '../lib/i18n';
+
+interface Props {
+    lang?: Lang;
+    alternates: Alternates;
+}
+const { lang, alternates } = Astro.props;
+---
+
+<div class="gh-lang-switch" role="group" aria-label="Language">
+    {
+        langs.map((l) => (
+            <a
+                href={alternates[l]}
+                hreflang={l}
+                lang={l}
+                data-lang={l}
+                class:list={{ 'is-active': l === (lang ?? 'en') }}
+                aria-current={l === lang ? 'true' : undefined}
+            >
+                {l.toUpperCase()}
+            </a>
+        ))
+    }
+</div>
+
+<style is:global>
+    .gh-lang-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        padding: 2px;
+        border-radius: 100px;
+        background-color: var(--color-lighter-gray);
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        line-height: 1;
+    }
+    .gh-lang-switch a {
+        padding: 6px 9px;
+        border-radius: 100px;
+        color: var(--color-secondary-text);
+    }
+    .gh-lang-switch a.is-active {
+        background-color: var(--color-white);
+        color: var(--color-darker-gray);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+    .gh-lang-switch a:hover {
+        opacity: 1;
+        color: var(--color-darker-gray);
+    }
+    /* Mobile shows the switch next to the logo; desktop in the right-hand actions. */
+    .gh-navigation-brand .gh-lang-switch {
+        margin-right: 4px;
+    }
+    @media (max-width: 767px) {
+        #gh-navigation .gh-navigation-brand {
+            grid-template-columns: 1fr auto auto auto;
+        }
+        .gh-navigation-actions .gh-lang-switch {
+            display: none;
+        }
+    }
+    @media (min-width: 768px) {
+        .gh-navigation-brand .gh-lang-switch {
+            display: none;
+        }
+    }
+</style>

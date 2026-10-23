@@ -12,13 +12,14 @@ export const site = {
     twitter: '@junsong_eth',
     postsPerPage: 12,
 
+    // `ko` is the link used while browsing in Korean (defaults to `url`).
     navigation: [
-        { label: 'Home', url: '/' },
+        { label: 'Home', url: '/', ko: '/ko/' },
         { label: 'About', url: '/about/' },
-        { label: 'Retrospect', url: '/tag/retrospect/' },
-        { label: 'Open-Source', url: '/tag/open-source/' },
+        { label: 'Retrospect', url: '/tag/retrospect/', ko: '/ko/tag/retrospect/' },
+        { label: 'Open-Source', url: '/tag/open-source/', ko: '/ko/tag/open-source/' },
         { label: 'EPF', url: 'https://epf.junsong.xyz/' },
-    ],
+    ] as { label: string; url: string; ko?: string }[],
 
     author: {
         slug: 'jun',
@@ -50,14 +51,5 @@ export const site = {
             src: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js',
             integrity: 'sha512-SkmBfuA2hqjzEVpmnMt/LINrjop3GKWqsuLSSB3e7iBmYK7JuWw4ldmmxwD9mdm2IRTTi0OxSAfEGvgEi0i2Kw==',
         },
-    ],
-};
-
-// Channels Ghost exposed via routes.yaml in addition to the default taxonomies.
-// A tag page listed here only shows posts in the given language.
-export const langScopedTags: Record<string, { path: string; lang: 'en' | 'ko' }[]> = {
-    retrospect: [
-        { path: '/tag/retrospect/', lang: 'en' },
-        { path: '/ko/tag/retrospect/', lang: 'ko' },
     ],
 };

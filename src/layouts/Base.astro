@@ -6,6 +6,7 @@ import Lightbox from '../components/Lightbox.astro';
 import Search from '../components/Search.astro';
 import { site } from '../site.config';
 import { absoluteUrl } from '../lib/ghost';
+import { homeUrl, langs, type Alternates, type Lang } from '../lib/i18n';
 
 export interface Seo {
     title: string;
@@ -28,14 +29,26 @@ interface Props {
     bodyClass: string;
     seo: Seo;
     lightbox?: boolean;
+    // Language of the page; omitted for pages that exist only once (About, author, 404).
+    lang?: Lang;
+    // Targets of the EN/KO switch; defaults to the two home pages.
+    alternates?: Partial<Alternates>;
+    // True when `alternates` points at a translation of this page (adds hreflang links).
+    translated?: boolean;
 }
-const { bodyClass, seo, lightbox = false } = Astro.props;
+const { bodyClass, seo, lightbox = false, lang, translated = false } = Astro.props;
+const alternates: Alternates = {
+    en: homeUrl('en'),
+    ko: homeUrl('ko'),
+    ...(lang && { [lang]: Astro.url.pathname }),
+    ...Astro.props.alternates,
+};
 const canonical = absoluteUrl(Astro.url.pathname);
 const image = seo.image ? absoluteUrl(seo.image) : undefined;
 ---
 
 <!doctype html>
-<html lang={site.locale}>
+<html lang={lang ?? site.locale} data-lang={lang}>
     <head>
         <title>{seo.title}</title>
         <meta charset="utf-8" />
@@ -75,6 +88,40 @@ const image = seo.image ? absoluteUrl(seo.image) : undefined;
         {seo.description && <meta name="description" content={seo.description} />}
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         {seo.noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+        {
+            translated &&
+                !seo.noindex &&
+                langs.map((l) => <link rel="alternate" hreflang={l} href={absoluteUrl(alternates[l])} />)
+        }
+        <script is:inline>
+            /* Remember the language the visitor reads in, and apply it on pages
+               that have no language of their own. */
+            (function () {
+                var root = document.documentElement;
+                var key = 'lang';
+                try {
+                    if (root.dataset.lang) localStorage.setItem(key, root.dataset.lang);
+                    else if (localStorage.getItem(key) === 'ko') root.dataset.langPref = 'ko';
+                } catch (e) {}
+                document.addEventListener('DOMContentLoaded', function () {
+                    if (root.dataset.langPref === 'ko') {
+                        document.querySelectorAll('[data-href-ko]').forEach(function (a) {
+                            a.setAttribute('href', a.dataset.hrefKo);
+                        });
+                        document.querySelectorAll('.gh-lang-switch a').forEach(function (a) {
+                            a.classList.toggle('is-active', a.dataset.lang === 'ko');
+                        });
+                    }
+                    document.querySelectorAll('.gh-lang-switch a').forEach(function (a) {
+                        a.addEventListener('click', function () {
+                            try {
+                                localStorage.setItem(key, a.dataset.lang);
+                            } catch (e) {}
+                        });
+                    });
+                });
+            })();
+        </script>
         {seo.prev && <link rel="prev" href={absoluteUrl(seo.prev)} />}
         {seo.next && <link rel="next" href={absoluteUrl(seo.next)} />}
         <meta name="referrer" content="no-referrer-when-downgrade" />
@@ -123,7 +170,7 @@ const image = seo.image ? absoluteUrl(seo.image) : undefined;
     </head>
     <body class={`${bodyClass} has-sans-title has-sans-body`}>
         <div class="gh-viewport">
-            <Navigation />
+            <Navigation lang={lang} alternates={alternates} />
             <slot />
             <Footer />
         </div>

@@ -3,13 +3,22 @@
 import Icon from './Icon.astro';
 import SearchToggle from './SearchToggle.astro';
 import Nav from './Nav.astro';
+import LangSwitch from './LangSwitch.astro';
+import { homeUrl, type Alternates, type Lang } from '../lib/i18n';
 import { site } from '../site.config';
+
+interface Props {
+    lang?: Lang;
+    alternates: Alternates;
+}
+const { lang, alternates } = Astro.props;
 ---
 
 <header id="gh-navigation" class="gh-navigation is-middle-logo gh-outer">
     <div class="gh-navigation-inner gh-inner">
         <div class="gh-navigation-brand">
-            <a class="gh-navigation-logo is-title" href="/">{site.title}</a>
+            <a class="gh-navigation-logo is-title" href={homeUrl(lang)} data-href-ko={homeUrl('ko')}>{site.title}</a>
+            <LangSwitch lang={lang} alternates={alternates} />
             <SearchToggle />
             <button class="gh-burger gh-icon-button" aria-label="Menu">
                 <Icon name="burger" />
@@ -18,10 +27,11 @@ import { site } from '../site.config';
         </div>
 
         <nav class="gh-navigation-menu">
-            <Nav items={site.navigation} />
+            <Nav items={site.navigation} lang={lang} />
         </nav>
 
         <div class="gh-navigation-actions">
+            <LangSwitch lang={lang} alternates={alternates} />
             <SearchToggle />
         </div>
     </div>

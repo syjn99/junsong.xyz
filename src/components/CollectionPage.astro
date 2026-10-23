@@ -1,10 +1,10 @@
 ---
-// index.hbs for the routes.yaml collections "/" (#en) and "/ko/" (#ko)
+// index.hbs for page 2+ of the "/" (English) and "/ko/" (Korean) collections
 import Base from '../layouts/Base.astro';
 import PostList from './PostList.astro';
-import { getPosts, paginate, type Lang } from '../lib/posts';
+import { getPosts, paginate } from '../lib/posts';
 import { collectionSeo } from '../lib/seo';
-import { site } from '../site.config';
+import { langPrefix, type Lang } from '../lib/i18n';
 
 interface Props {
     lang: Lang;
@@ -12,18 +12,16 @@ interface Props {
 }
 const { lang, page } = Astro.props;
 const { items, pages } = paginate(await getPosts({ lang }), page);
-// Source's post-list.hbs prepends the latest posts (any language) on page 2.
-const leading = page === 2 ? (await getPosts()).slice(0, site.postsPerPage) : [];
-const base = lang === 'ko' ? '/ko' : '';
+const base = langPrefix(lang);
 const seo = {
-    ...collectionSeo(page, { channel: lang === 'ko' }),
-    prev: page > 2 ? `${base}/page/${page - 1}/` : page === 2 ? `${base}/` : undefined,
+    ...collectionSeo(page),
+    prev: page > 2 ? `${base}/page/${page - 1}/` : `${base}/`,
     next: page < pages ? `${base}/page/${page + 1}/` : undefined,
 };
 ---
 
-<Base bodyClass={page > 1 ? 'paged' : ''} seo={seo}>
+<Base bodyClass="paged" seo={seo} lang={lang}>
     <main class="gh-main">
-        <PostList posts={items} leading={leading} showMore={pages > 1} />
+        <PostList posts={items} lang={lang} moreHref={seo.next} />
     </main>
 </Base>

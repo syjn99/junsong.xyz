@@ -3,35 +3,35 @@
 import PostCard from './PostCard.astro';
 import Icon from './Icon.astro';
 import type { Post } from '../lib/posts';
+import { ui, type Lang } from '../lib/i18n';
 import { site } from '../site.config';
 
 interface Props {
     posts: Post[];
-    // Cards rendered before `posts` without lazy loading (Ghost's page-2 quirk).
-    leading?: Post[];
+    lang?: Lang;
     withTags?: boolean;
     showTitle?: boolean;
-    showMore?: boolean;
+    // Target of the "See all" link, usually the next page.
+    moreHref?: string;
 }
-const { posts, leading = [], withTags = true, showTitle = true, showMore = false } = Astro.props;
+const { posts, lang = 'en', withTags = true, showTitle = true, moreHref } = Astro.props;
 const showSidebar = site.theme.showSidebar;
 ---
 
 <section class:list={['gh-container is-list', { 'has-sidebar': showSidebar, 'no-image': !site.theme.showImagesInFeed }, 'gh-outer']}>
     <div class="gh-container-inner gh-inner">
-        {showTitle && <h2 class="gh-container-title">Latest</h2>}
+        {showTitle && <h2 class="gh-container-title">{ui[lang].latest}</h2>}
 
         <main class="gh-main">
             <div class="gh-feed">
-                {leading.map((post) => <PostCard post={post} withTags={false} />)}
                 {posts.map((post) => <PostCard post={post} lazyLoad withTags={withTags} />)}
             </div>
 
             {
-                showMore && (
+                moreHref && (
                     <div class="gh-more is-title">
-                        <a href="/page/2/">
-                            See all <Icon name="arrow" />
+                        <a href={moreHref}>
+                            {ui[lang].seeAll} <Icon name="arrow" />
                         </a>
                     </div>
                 )

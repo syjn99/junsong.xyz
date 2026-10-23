@@ -1,28 +1,26 @@
 ---
-// Korean channels from routes.yaml, e.g. /ko/tag/retrospect/
+// /ko/tag/<slug>/ and /ko/tag/<slug>/page/<n>/: Korean posts with the tag
 import ArchivePage from '../../../components/ArchivePage.astro';
-import { getPosts, paginate } from '../../../lib/posts';
-import { collectionSeo } from '../../../lib/seo';
-import { langScopedTags } from '../../../site.config';
+import { archiveSeo } from '../../../lib/seo';
+import { tagRoutes, type TagRouteProps } from '../../../lib/tag-routes';
+import { tagUrl } from '../../../lib/i18n';
 
-export async function getStaticPaths() {
-    const routes = [];
-    for (const [slug, channels] of Object.entries(langScopedTags)) {
-        for (const c of channels.filter((c) => c.path.startsWith('/ko/tag/'))) {
-            const all = await getPosts({ tag: slug, lang: c.lang });
-            const { pages } = paginate(all, 1);
-            for (let page = 1; page <= pages; page++) {
-                routes.push({
-                    params: { path: page === 1 ? slug : `${slug}/page/${page}` },
-                    props: { page, pages, posts: paginate(all, page).items },
-                });
-            }
-        }
-    }
-    return routes;
-}
+export const getStaticPaths = () => tagRoutes('ko');
 
-const { page, pages, posts } = Astro.props;
+const { tag, page, pages, posts, other } = Astro.props as TagRouteProps;
 ---
 
-<ArchivePage kind="channel" posts={posts} page={page} pages={pages} seo={collectionSeo(page, { channel: true })} />
+<ArchivePage
+    kind="tag"
+    slug={tag.slug}
+    name={tag.name}
+    description={tag.description}
+    featureImage={tag.feature_image}
+    posts={posts}
+    page={page}
+    pages={pages}
+    base={tagUrl(tag.slug, 'ko')}
+    lang="ko"
+    alternates={other ? { en: other } : undefined}
+    seo={archiveSeo(tag.name, page, { coverImage: true })}
+/>

@@ -1,0 +1,36 @@
+---
+// home.hbs with header_style "Search" and the cover image background.
+// "/" lists English posts, "/ko/" Korean posts.
+import Base from '../layouts/Base.astro';
+import PostList from './PostList.astro';
+import Icon from './Icon.astro';
+import { getPosts } from '../lib/posts';
+import { collectionSeo } from '../lib/seo';
+import { langPrefix, ui, type Lang } from '../lib/i18n';
+import { site } from '../site.config';
+
+interface Props {
+    lang: Lang;
+}
+const { lang } = Astro.props;
+const posts = await getPosts({ lang });
+---
+
+<Base bodyClass="home-template" seo={collectionSeo(1)} lang={lang}>
+    <section class="gh-header is-classic has-image gh-outer">
+        <img class="gh-header-image" src={site.coverImage} alt={site.title} />
+        <div class="gh-header-inner gh-inner">
+            <h1 class="gh-header-title is-title">{site.description}</h1>
+            <form class="gh-form">
+                <Icon name="search" />
+                <button class="gh-form-input" data-ghost-search>{ui[lang].search}</button>
+            </form>
+        </div>
+    </section>
+
+    <PostList
+        posts={posts.slice(0, site.postsPerPage)}
+        lang={lang}
+        moreHref={posts.length > site.postsPerPage ? `${langPrefix(lang)}/page/2/` : undefined}
+    />
+</Base>

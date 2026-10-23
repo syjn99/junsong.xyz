@@ -1,19 +1,27 @@
 ---
 // Ghost's {{navigation}} helper output
+import type { Lang } from '../lib/i18n';
+
 interface Props {
-    items: { label: string; url: string }[];
+    items: { label: string; url: string; ko?: string }[];
+    lang?: Lang;
 }
-const { items } = Astro.props;
+const { items, lang } = Astro.props;
 const current = Astro.url.pathname;
 const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 ---
 
 <ul class="nav">
     {
-        items.map((item) => (
-            <li class:list={[`nav-${slugify(item.label)}`, { 'nav-current': item.url === current }]}>
-                <a href={item.url}>{item.label}</a>
-            </li>
-        ))
+        items.map((item) => {
+            const url = lang === 'ko' ? (item.ko ?? item.url) : item.url;
+            return (
+                <li class:list={[`nav-${slugify(item.label)}`, { 'nav-current': url === current }]}>
+                    <a href={url} data-href-ko={item.ko}>
+                        {item.label}
+                    </a>
+                </li>
+            );
+        })
     }
 </ul>
