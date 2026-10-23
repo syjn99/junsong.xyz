@@ -1,0 +1,14 @@
+---
+// English posts (/slug/) and static pages (/about/)
+import Article from '../components/Article.astro';
+import { getPages, getPosts, type Post } from '../lib/posts';
+
+export async function getStaticPaths() {
+    const entries = [...(await getPosts({ lang: 'en' })), ...(await getPages())];
+    return entries.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+---
+
+<Article post={post} />

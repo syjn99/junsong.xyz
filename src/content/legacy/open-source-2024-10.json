@@ -1,0 +1,23 @@
+{
+  "type": "post",
+  "slug": "open-source-2024-10",
+  "lang": "en",
+  "title": "Monthly Contribution - October 2024",
+  "html": "<div class=\"kg-card kg-callout-card kg-callout-card-blue\"><div class=\"kg-callout-emoji\">💡</div><div class=\"kg-callout-text\">Opened 1 issue to Prysm</div></div><h1 id=\"prysm\"><a href=\"https://github.com/prysmaticlabs/prysm\">Prysm</a></h1><h3 id=\"1\">#1</h3><figure class=\"kg-card kg-bookmark-card\"><a class=\"kg-bookmark-container\" href=\"https://github.com/prysmaticlabs/prysm/issues/14564\"><div class=\"kg-bookmark-content\"><div class=\"kg-bookmark-title\">Prysm API `GetActiveSetChanges` returns incorrect indices for exited and ejected validators · Issue #14564 · prysmaticlabs/prysm</div><div class=\"kg-bookmark-description\">💎 Issue Description I came across an issue with the ExitedValidatorIndices function in the GetActiveSetChanges API (/prysm/v1/validators/active_set_changes). The returned indices for exited validat…</div><div class=\"kg-bookmark-metadata\"><img class=\"kg-bookmark-icon\" src=\"https://github.githubassets.com/assets/pinned-octocat-093da3e6fa40.svg\" alt=\"\"><span class=\"kg-bookmark-author\">GitHub</span><span class=\"kg-bookmark-publisher\">prysmaticlabs</span></div></div><div class=\"kg-bookmark-thumbnail\"><img src=\"https://opengraph.githubassets.com/a8a9e49dce1eac5a7d52673422efc3696376e10ff8acfd6164c4daa5f2fecca9/prysmaticlabs/prysm/issues/14564\" alt=\"\" onerror=\"this.style.display = 'none'\"></div></a></figure><ul><li>Opened first issue at Prysm.</li><li>Prysm supports a custom endpoint that informs the delta of validator set for each epoch(<code>/prysm/v1/validators/active_set_changes</code>).</li><li>I found that this API will return wrong answer for exited and ejected validators, as it 1) finds the maximum exit epoch from the validator set, 2) adds <code>MinValidatorWithdrawabilityDelay</code> (which is 256) to the exit epoch, and 3) compares this value to the withdrawable epoch of each validator.</li><li>Two PRs were born from this issue:<ul><li><a href=\"https://github.com/prysmaticlabs/prysm/pull/14587\">https://github.com/prysmaticlabs/prysm/pull/14587</a></li><li><a href=\"https://github.com/prysmaticlabs/prysm/pull/14588\">https://github.com/prysmaticlabs/prysm/pull/14588</a></li></ul></li><li>Opened at October 22nd.</li></ul><h3 id=\"\"></h3>",
+  "plaintext": "💡Opened 1 issue to Prysm\n\n\nPrysm\n\n\n#1\n\nPrysm API `GetActiveSetChanges` returns incorrect indices for exited and ejected validators · Issue #14564 · prysmaticlabs/prysm💎 Issue Description I came across an issue with the ExitedValidatorIndices function in the GetActiveSetChanges API (/prysm/v1/validators/active_set_changes). The returned indices for exited validat…GitHubprysmaticlabs\n * Opened first issue at Prysm.\n * Prysm supports a custom endpoint that informs the delta of validator set for each epoch(/prysm/v1/validators/active_set_changes).\n * I found that this API will return wrong answer for exited and ejected validators, as it 1) finds the maximum exit epoch from the validator set, 2) adds MinValidatorWithdrawabilityDelay (which is 256) to the exit epoch, and 3) compares this value to the withdrawable epoch of each validator.\n * Two PRs were born from this issue:\n   * https://github.com/prysmaticlabs/prysm/pull/14587\n   * https://github.com/prysmaticlabs/prysm/pull/14588\n * Opened at October 22nd.\n\n\n",
+  "feature_image": "https://images.unsplash.com/photo-1502951682449-e5b93545d46e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMTc3M3wwfDF8c2VhcmNofDI3fHxjb2RlfGVufDB8fHx8MTczMzQ0NDYzM3ww&ixlib=rb-4.0.3&q=80&w=2000",
+  "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@goran_ivos?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Goran Ivos</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>",
+  "featured": false,
+  "show_title_and_feature_image": true,
+  "tags": [
+    "open-source"
+  ],
+  "class_tags": [
+    "open-source",
+    "en"
+  ],
+  "primary_tag": "open-source",
+  "reading_time": "1 min read",
+  "published_at": "2024-10-31T00:00:00.000Z",
+  "updated_at": "2026-08-10T09:41:54.000Z"
+}

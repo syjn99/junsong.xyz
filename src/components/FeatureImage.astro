@@ -1,0 +1,25 @@
+---
+// partials/feature-image.hbs
+import { imgUrl } from '../lib/ghost';
+
+interface Props {
+    src?: string;
+    alt: string;
+    caption?: string;
+}
+const { src, alt, caption } = Astro.props;
+---
+
+{
+    src && (
+        <figure class="gh-article-image">
+            <img
+                srcset={`${imgUrl(src, 's')} 320w, ${imgUrl(src, 'm')} 600w, ${imgUrl(src, 'l')} 960w, ${imgUrl(src, 'xl')} 1200w, ${imgUrl(src, 'xxl')} 2000w`}
+                sizes="(max-width: 1200px) 100vw, 1120px"
+                src={imgUrl(src, 'xl')}
+                alt={alt}
+            />
+            {caption && <figcaption set:html={caption} />}
+        </figure>
+    )
+}

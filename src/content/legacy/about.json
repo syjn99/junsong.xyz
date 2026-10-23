@@ -1,0 +1,14 @@
+{
+  "type": "page",
+  "slug": "about",
+  "title": "About Jun Song",
+  "html": "<p>Currently Ethereum Core Developer at <a href=\"https://github.com/offchainlabs/prysm/\">Prysm</a> by Offchain.</p><hr><p>Previously:</p><h3 id=\"ethereum-protocol-fellowship-cohort-six\">Ethereum Protocol Fellowship (Cohort Six)</h3><p>I worked for <strong>SSZ Query Language</strong> (<a href=\"https://github.com/eth-protocol-fellows/cohort-six/blob/master/projects/ssz-ql-with-merkle-proofs.md\">Project Proposal</a>) in <a href=\"https://github.com/offchainlabs/prysm/\">Prysm</a>. See my full updates and write-ups <a href=\"https://hackmd.io/@junsong/SkB51ZR1be\">here</a>, and the <strong>final report</strong> <a href=\"https://epf.junsong.xyz/\">here</a>.</p><h3 id=\"open-source-contributions\">Open-source contributions</h3><p>See my works at...<br><a href=\"https://github.com/prysmaticlabs/prysm/pulls?q=author:syjn99\">Prysm</a> | <a href=\"https://github.com/paradigmxyz/reth/pulls?q=author:syjn99\">Reth</a> | <a href=\"https://github.com/sigp/lighthouse/pulls?q=author:syjn99\">Lighthouse</a><br>You can also visit <a href=\"/tag/open-source/\">my monthly contribution tab</a> about the deeper thought while I'm working on open-source!</p><hr><p>Check out my Résumé <a href=\"https://github.com/syjn99/resume/blob/main/resume/20260601.pdf\" rel=\"noreferrer\">here</a>.</p><p>Connect with me on:<br><a href=\"https://www.linkedin.com/in/youngthejun/\">LinkedIn</a> | <a href=\"https://github.com/syjn99\" rel=\"noreferrer\">Github</a> | <a href=\"https://x.com/junsong_eth\" rel=\"noreferrer\">X</a> | Telegram: @junsong_eth</p>",
+  "plaintext": "Currently Ethereum Core Developer at Prysm by Offchain.\n\nPreviously:\n\n\nEthereum Protocol Fellowship (Cohort Six)\n\nI worked for SSZ Query Language (Project Proposal) in Prysm. See my full updates and write-ups here, and the final report here.\n\n\nOpen-source contributions\n\nSee my works at...\nPrysm | Reth | Lighthouse\nYou can also visit my monthly contribution tab about the deeper thought while I'm working on open-source!\n\nCheck out my Résumé here.\n\nConnect with me on:\nLinkedIn | Github | X | Telegram: @junsong_eth",
+  "featured": false,
+  "show_title_and_feature_image": true,
+  "tags": [],
+  "class_tags": [],
+  "reading_time": "1 min read",
+  "published_at": "2024-09-07T07:43:57.000Z",
+  "updated_at": "2026-06-27T03:18:23.000Z"
+}

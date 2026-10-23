@@ -1,0 +1,44 @@
+---
+// /tag/<slug>/ and /tag/<slug>/page/<n>/, plus language-scoped channels
+// such as /ko/tag/retrospect/ (see langScopedTags in site.config.ts).
+import ArchivePage from '../../components/ArchivePage.astro';
+import { getPosts, getTags, paginate } from '../../lib/posts';
+import { archiveSeo, collectionSeo } from '../../lib/seo';
+import { langScopedTags } from '../../site.config';
+
+export async function getStaticPaths() {
+    const routes = [];
+    for (const tag of await getTags()) {
+        const channels = langScopedTags[tag.slug];
+        const variants = channels
+            ? channels.filter((c) => c.path.startsWith('/tag/')).map((c) => ({ lang: c.lang, channel: true }))
+            : [{ lang: undefined, channel: false }];
+        for (const v of variants) {
+            const all = await getPosts({ tag: tag.slug, lang: v.lang });
+            const { pages } = paginate(all, 1);
+            for (let page = 1; page <= pages; page++) {
+                routes.push({
+                    params: { path: page === 1 ? tag.slug : `${tag.slug}/page/${page}` },
+                    props: { tag, page, pages, posts: paginate(all, page).items, channel: v.channel },
+                });
+            }
+        }
+    }
+    return routes;
+}
+
+const { tag, page, pages, posts, channel } = Astro.props;
+const seo = channel ? collectionSeo(page, { channel: true }) : archiveSeo(tag.name, page, { coverImage: true });
+---
+
+<ArchivePage
+    kind={channel ? 'channel' : 'tag'}
+    slug={tag.slug}
+    name={tag.name}
+    description={tag.description}
+    featureImage={tag.feature_image}
+    posts={posts}
+    page={page}
+    pages={pages}
+    seo={seo}
+/>

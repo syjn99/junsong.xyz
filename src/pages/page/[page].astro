@@ -1,0 +1,11 @@
+---
+import CollectionPage from '../../components/CollectionPage.astro';
+import { getPosts, paginate } from '../../lib/posts';
+
+export async function getStaticPaths() {
+    const { pages } = paginate(await getPosts({ lang: 'en' }), 1);
+    return Array.from({ length: pages - 1 }, (_, i) => ({ params: { page: String(i + 2) } }));
+}
+---
+
+<CollectionPage lang="en" page={Number(Astro.params.page)} />

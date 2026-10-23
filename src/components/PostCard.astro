@@ -1,0 +1,51 @@
+---
+// partials/post-card.hbs
+import { imgUrl, cardExcerpt, formatDate, isoDate } from '../lib/ghost';
+import { postClass, type Post } from '../lib/posts';
+import { site } from '../site.config';
+
+interface Props {
+    post: Post;
+    lazyLoad?: boolean;
+    imageSizes?: string;
+    // Ghost's {{#get}} without include="tags" leaves cards without tag info.
+    withTags?: boolean;
+}
+const { post, lazyLoad = false, imageSizes = '320px', withTags = true } = Astro.props;
+const img = post.featureImage;
+const cls = withTags ? postClass(post) : [post.type, post.featured ? 'featured' : '', img ? '' : 'no-image'].filter(Boolean).join(' ');
+const excerpt = cardExcerpt(post);
+---
+
+<article class:list={['gh-card', cls, { 'no-image': !site.theme.showImagesInFeed }]}>
+    <a class="gh-card-link" href={post.url}>
+        {
+            img && (
+                <figure class="gh-card-image">
+                    <img
+                        srcset={`${imgUrl(img, 'xs', 'webp')} 160w, ${imgUrl(img, 's', 'webp')} 320w, ${imgUrl(img, 'm', 'webp')} 600w, ${imgUrl(img, 'l', 'webp')} 960w, ${imgUrl(img, 'xl', 'webp')} 1200w, ${imgUrl(img, 'xxl', 'webp')} 2000w`}
+                        sizes={imageSizes}
+                        src={imgUrl(img, 'm')}
+                        alt={post.featureImageAlt ?? post.title}
+                        loading={lazyLoad ? 'lazy' : undefined}
+                    />
+                </figure>
+            )
+        }
+        <div class="gh-card-wrapper">
+            {withTags && post.primaryTag && <p class="gh-card-tag">{post.primaryTag.name}</p>}
+            <h3 class="gh-card-title is-title">{post.title}</h3>
+            {excerpt && <p class="gh-card-excerpt is-body">{excerpt}</p>}
+            <footer class="gh-card-meta">
+                {site.theme.showAuthor && <span class="gh-card-author">By {site.author.name}</span>}
+                {
+                    site.theme.showPublishDate && (
+                        <time class="gh-card-date" datetime={isoDate(post.publishedAt)}>
+                            {formatDate(post.publishedAt)}
+                        </time>
+                    )
+                }
+            </footer>
+        </div>
+    </a>
+</article>

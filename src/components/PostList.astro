@@ -1,0 +1,54 @@
+---
+// partials/components/post-list.hbs (List style, publication sidebar)
+import PostCard from './PostCard.astro';
+import Icon from './Icon.astro';
+import type { Post } from '../lib/posts';
+import { site } from '../site.config';
+
+interface Props {
+    posts: Post[];
+    // Cards rendered before `posts` without lazy loading (Ghost's page-2 quirk).
+    leading?: Post[];
+    withTags?: boolean;
+    showTitle?: boolean;
+    showMore?: boolean;
+}
+const { posts, leading = [], withTags = true, showTitle = true, showMore = false } = Astro.props;
+const showSidebar = site.theme.showSidebar;
+---
+
+<section class:list={['gh-container is-list', { 'has-sidebar': showSidebar, 'no-image': !site.theme.showImagesInFeed }, 'gh-outer']}>
+    <div class="gh-container-inner gh-inner">
+        {showTitle && <h2 class="gh-container-title">Latest</h2>}
+
+        <main class="gh-main">
+            <div class="gh-feed">
+                {leading.map((post) => <PostCard post={post} withTags={false} />)}
+                {posts.map((post) => <PostCard post={post} lazyLoad withTags={withTags} />)}
+            </div>
+
+            {
+                showMore && (
+                    <div class="gh-more is-title">
+                        <a href="/page/2/">
+                            See all <Icon name="arrow" />
+                        </a>
+                    </div>
+                )
+            }
+        </main>
+
+        {
+            showSidebar && (
+                <aside class="gh-sidebar">
+                    <div class="gh-sidebar-inner">
+                        <section class="gh-about">
+                            <h3 class="gh-about-title is-title">{site.title}</h3>
+                            {site.description && <p class="gh-about-description is-body">{site.description}</p>}
+                        </section>
+                    </div>
+                </aside>
+            )
+        }
+    </div>
+</section>

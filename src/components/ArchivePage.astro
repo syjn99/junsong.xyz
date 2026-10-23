@@ -1,0 +1,78 @@
+---
+// tag.hbs / author.hbs, plus routes.yaml channels (no archive header)
+import Base from '../layouts/Base.astro';
+import PostList from './PostList.astro';
+import FeatureImage from './FeatureImage.astro';
+import Icon from './Icon.astro';
+import type { Post } from '../lib/posts';
+import type { Seo } from '../layouts/Base.astro';
+import { imgUrl } from '../lib/ghost';
+import { site } from '../site.config';
+
+interface Props {
+    kind: 'tag' | 'author' | 'channel';
+    slug?: string;
+    name?: string;
+    description?: string;
+    featureImage?: string;
+    posts: Post[];
+    page: number;
+    pages: number;
+    seo: Seo;
+}
+const { kind, slug, name, description, featureImage, posts, page, pages, seo } = Astro.props;
+const author = site.author;
+const bodyClass =
+    kind === 'channel'
+        ? page > 1
+            ? 'paged'
+            : ''
+        : [`${kind}-template`, `${kind}-${slug}`, page > 1 ? 'paged' : ''].filter(Boolean).join(' ');
+const sidebar = site.theme.showSidebar;
+---
+
+<Base bodyClass={bodyClass} seo={seo}>
+    <main class="gh-main gh-outer">
+        {
+            kind === 'tag' && (
+                <section class:list={['gh-archive', { 'has-image': featureImage, 'has-sidebar': sidebar }, 'gh-inner']}>
+                    <div class="gh-archive-inner">
+                        <header class="gh-archive-wrapper">
+                            <h1 class="gh-article-title is-title">{name}</h1>
+                            {description && <p class="gh-article-excerpt">{description}</p>}
+                        </header>
+                        <FeatureImage src={featureImage} alt={name!} />
+                    </div>
+                </section>
+            )
+        }
+        {
+            kind === 'author' && (
+                <section class:list={['gh-archive', { 'has-sidebar': sidebar }, 'gh-inner']}>
+                    <div class="gh-archive-inner">
+                        <div class="gh-archive-wrapper">
+                            <h1 class="gh-article-title is-title">{author.name}</h1>
+                            <p class="gh-article-excerpt">{author.bio}</p>
+                            <footer class="gh-author-meta">
+                                <div class="gh-author-social">
+                                    <a
+                                        class="gh-author-social-link"
+                                        href={`https://x.com/${author.twitter.replace(/^@/, '')}`}
+                                        target="_blank"
+                                        rel="noopener"
+                                    >
+                                        <Icon name="twitter" />
+                                    </a>
+                                </div>
+                                <div class="gh-author-location">{author.location}</div>
+                            </footer>
+                        </div>
+                        <img class="gh-article-image" src={imgUrl(author.profileImage, 's')} alt={author.name} />
+                    </div>
+                </section>
+            )
+        }
+
+        <PostList posts={posts} showTitle={false} showMore={pages > 1} />
+    </main>
+</Base>

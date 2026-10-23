@@ -1,0 +1,28 @@
+---
+// home.hbs with header_style "Search" and the cover image background
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import Icon from '../components/Icon.astro';
+import { getPosts } from '../lib/posts';
+import { collectionSeo } from '../lib/seo';
+import { site } from '../site.config';
+
+const enPosts = await getPosts({ lang: 'en' });
+// home.hbs lists the latest posts across every language via {{#get}}.
+const latest = (await getPosts()).slice(0, site.postsPerPage);
+---
+
+<Base bodyClass="home-template" seo={collectionSeo(1)}>
+    <section class="gh-header is-classic has-image gh-outer">
+        <img class="gh-header-image" src={site.coverImage} alt={site.title} />
+        <div class="gh-header-inner gh-inner">
+            <h1 class="gh-header-title is-title">{site.description}</h1>
+            <form class="gh-form">
+                <Icon name="search" />
+                <button class="gh-form-input" data-ghost-search>Search posts, tags and authors</button>
+            </form>
+        </div>
+    </section>
+
+    <PostList posts={latest} withTags={false} showMore={enPosts.length > site.postsPerPage} />
+</Base>

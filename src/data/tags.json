@@ -1,0 +1,22 @@
+[
+  {
+    "slug": "retrospect",
+    "name": "Retrospect"
+  },
+  {
+    "slug": "frontend",
+    "name": "Frontend"
+  },
+  {
+    "slug": "core",
+    "name": "Core"
+  },
+  {
+    "slug": "archive",
+    "name": "Archive"
+  },
+  {
+    "slug": "open-source",
+    "name": "Open-Source"
+  }
+]

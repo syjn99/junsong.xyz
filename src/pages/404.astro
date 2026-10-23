@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site.config';
+---
+
+<Base bodyClass="error-template" seo={{ title: `Page not found - ${site.title}`, noindex: true }}>
+    <main class="gh-main gh-outer">
+        <section class="gh-archive gh-inner">
+            <div class="gh-archive-inner">
+                <header class="gh-archive-wrapper">
+                    <h1 class="gh-article-title is-title">404</h1>
+                    <p class="gh-article-excerpt">Page not found. <a href="/">Go to the front page →</a></p>
+                </header>
+            </div>
+        </section>
+    </main>
+</Base>

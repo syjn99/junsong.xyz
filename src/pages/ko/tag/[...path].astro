@@ -1,0 +1,28 @@
+---
+// Korean channels from routes.yaml, e.g. /ko/tag/retrospect/
+import ArchivePage from '../../../components/ArchivePage.astro';
+import { getPosts, paginate } from '../../../lib/posts';
+import { collectionSeo } from '../../../lib/seo';
+import { langScopedTags } from '../../../site.config';
+
+export async function getStaticPaths() {
+    const routes = [];
+    for (const [slug, channels] of Object.entries(langScopedTags)) {
+        for (const c of channels.filter((c) => c.path.startsWith('/ko/tag/'))) {
+            const all = await getPosts({ tag: slug, lang: c.lang });
+            const { pages } = paginate(all, 1);
+            for (let page = 1; page <= pages; page++) {
+                routes.push({
+                    params: { path: page === 1 ? slug : `${slug}/page/${page}` },
+                    props: { page, pages, posts: paginate(all, page).items },
+                });
+            }
+        }
+    }
+    return routes;
+}
+
+const { page, pages, posts } = Astro.props;
+---
+
+<ArchivePage kind="channel" posts={posts} page={page} pages={pages} seo={collectionSeo(page, { channel: true })} />

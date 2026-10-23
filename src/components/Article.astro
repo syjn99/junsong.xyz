@@ -1,0 +1,111 @@
+---
+// post.hbs and page.hbs
+import Base from '../layouts/Base.astro';
+import FeatureImage from './FeatureImage.astro';
+import PostCard from './PostCard.astro';
+import { getPosts, postClass, type Post } from '../lib/posts';
+import { postSeo } from '../lib/seo';
+import { formatDate, imgUrl, isoDate } from '../lib/ghost';
+import { site } from '../site.config';
+
+interface Props {
+    post: Post;
+}
+const { post } = Astro.props;
+const isPost = post.type === 'post';
+const seo = await postSeo(post);
+
+const bodyClass = isPost
+    ? ['post-template', ...post.classTags.map((t) => `tag-${t}`)].join(' ')
+    : `page-template page-${post.slug}`;
+
+const related =
+    isPost && site.theme.showRelatedArticles ? (await getPosts()).filter((p) => p.url !== post.url).slice(0, 4) : [];
+const authorUrl = `/author/${site.author.slug}/`;
+---
+
+<Base bodyClass={bodyClass} seo={seo} lightbox>
+    <main class="gh-main">
+        <article class={`gh-article ${postClass(post)}`}>
+            {
+                isPost ? (
+                    <header class="gh-article-header gh-canvas">
+                        {post.primaryTag && (
+                            <a class="gh-article-tag" href={post.primaryTag.url}>
+                                {post.primaryTag.name}
+                            </a>
+                        )}
+                        <h1 class="gh-article-title is-title" data-pagefind-meta="title">
+                            {post.title}
+                        </h1>
+                        {post.customExcerpt && <p class="gh-article-excerpt is-body">{post.customExcerpt}</p>}
+
+                        {site.theme.showPostMetadata && (
+                            <div class="gh-article-meta">
+                                <div class="gh-article-author-image instapaper_ignore">
+                                    <a href={authorUrl}>
+                                        <img
+                                            class="author-profile-image"
+                                            src={imgUrl(site.author.profileImage, 'xs')}
+                                            alt={site.author.name}
+                                        />
+                                    </a>
+                                </div>
+                                <div class="gh-article-meta-wrapper">
+                                    <h4 class="gh-article-author-name">
+                                        <a href={authorUrl}>{site.author.name}</a>
+                                    </h4>
+                                    <div class="gh-article-meta-content">
+                                        <time class="gh-article-meta-date" datetime={isoDate(post.publishedAt)}>
+                                            {formatDate(post.publishedAt)}
+                                        </time>{' '}
+                                        <span class="gh-article-meta-length">
+                                            <span class="bull">—</span> {post.readingTime}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <FeatureImage
+                            src={post.featureImage}
+                            alt={post.featureImageAlt ?? post.title}
+                            caption={post.featureImageCaption}
+                        />
+                    </header>
+                ) : (
+                    post.showTitleAndFeatureImage && (
+                        <header class="gh-article-header gh-canvas">
+                            <h1 class="gh-article-title is-title" data-pagefind-meta="title">
+                                {post.title}
+                            </h1>
+                            {post.customExcerpt && <p class="gh-article-excerpt is-body">{post.customExcerpt}</p>}
+                            <FeatureImage
+                                src={post.featureImage}
+                                alt={post.featureImageAlt ?? post.title}
+                                caption={post.featureImageCaption}
+                            />
+                        </header>
+                    )
+                )
+            }
+
+            <section class="gh-content gh-canvas is-body" data-pagefind-body set:html={post.html} />
+        </article>
+    </main>
+
+    {
+        related.length > 0 && (
+            <section class="gh-container is-grid gh-outer">
+                <div class="gh-container-inner gh-inner">
+                    <h2 class="gh-container-title">Read more</h2>
+                    <div class="gh-feed">
+                        {related.map((p) => (
+                            <PostCard post={p} lazyLoad withTags={false} />
+                        ))}
+                    </div>
+                </div>
+            </section>
+        )
+    }
+</Base>

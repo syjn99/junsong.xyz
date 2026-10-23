@@ -1,0 +1,29 @@
+---
+// index.hbs for the routes.yaml collections "/" (#en) and "/ko/" (#ko)
+import Base from '../layouts/Base.astro';
+import PostList from './PostList.astro';
+import { getPosts, paginate, type Lang } from '../lib/posts';
+import { collectionSeo } from '../lib/seo';
+import { site } from '../site.config';
+
+interface Props {
+    lang: Lang;
+    page: number;
+}
+const { lang, page } = Astro.props;
+const { items, pages } = paginate(await getPosts({ lang }), page);
+// Source's post-list.hbs prepends the latest posts (any language) on page 2.
+const leading = page === 2 ? (await getPosts()).slice(0, site.postsPerPage) : [];
+const base = lang === 'ko' ? '/ko' : '';
+const seo = {
+    ...collectionSeo(page, { channel: lang === 'ko' }),
+    prev: page > 2 ? `${base}/page/${page - 1}/` : page === 2 ? `${base}/` : undefined,
+    next: page < pages ? `${base}/page/${page + 1}/` : undefined,
+};
+---
+
+<Base bodyClass={page > 1 ? 'paged' : ''} seo={seo}>
+    <main class="gh-main">
+        <PostList posts={items} leading={leading} showMore={pages > 1} />
+    </main>
+</Base>

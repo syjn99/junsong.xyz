@@ -1,0 +1,16 @@
+---
+// partials/components/footer.hbs. Ghost's "Sign up" link and "Powered by Ghost"
+// were dropped: there is no membership portal on the static site.
+import { site } from '../site.config';
+const year = new Date().getFullYear();
+---
+
+<footer class="gh-footer gh-outer">
+    <div class="gh-footer-inner gh-inner">
+        <div class="gh-footer-bar">
+            <span class="gh-footer-logo is-title">{site.title}</span>
+            <nav class="gh-footer-menu"></nav>
+            <div class="gh-footer-copyright">© {year} {site.author.name}</div>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,27 @@
+---
+import ArchivePage from '../../components/ArchivePage.astro';
+import { getPosts, paginate } from '../../lib/posts';
+import { archiveSeo } from '../../lib/seo';
+import { site } from '../../site.config';
+
+export async function getStaticPaths() {
+    const all = await getPosts();
+    const { pages } = paginate(all, 1);
+    const slug = site.author.slug;
+    return Array.from({ length: pages }, (_, i) => ({
+        params: { path: i === 0 ? slug : `${slug}/page/${i + 1}` },
+        props: { page: i + 1, pages, posts: paginate(all, i + 1).items },
+    }));
+}
+
+const { page, pages, posts } = Astro.props;
+---
+
+<ArchivePage
+    kind="author"
+    slug={site.author.slug}
+    posts={posts}
+    page={page}
+    pages={pages}
+    seo={archiveSeo(site.author.name, page)}
+/>

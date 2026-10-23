@@ -1,0 +1,19 @@
+---
+// Ghost's {{navigation}} helper output
+interface Props {
+    items: { label: string; url: string }[];
+}
+const { items } = Astro.props;
+const current = Astro.url.pathname;
+const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+---
+
+<ul class="nav">
+    {
+        items.map((item) => (
+            <li class:list={[`nav-${slugify(item.label)}`, { 'nav-current': item.url === current }]}>
+                <a href={item.url}>{item.label}</a>
+            </li>
+        ))
+    }
+</ul>

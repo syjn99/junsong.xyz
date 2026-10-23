@@ -1,0 +1,28 @@
+---
+// partials/components/navigation.hbs ("Logo in the middle", members disabled)
+import Icon from './Icon.astro';
+import SearchToggle from './SearchToggle.astro';
+import Nav from './Nav.astro';
+import { site } from '../site.config';
+---
+
+<header id="gh-navigation" class="gh-navigation is-middle-logo gh-outer">
+    <div class="gh-navigation-inner gh-inner">
+        <div class="gh-navigation-brand">
+            <a class="gh-navigation-logo is-title" href="/">{site.title}</a>
+            <SearchToggle />
+            <button class="gh-burger gh-icon-button" aria-label="Menu">
+                <Icon name="burger" />
+                <Icon name="close" />
+            </button>
+        </div>
+
+        <nav class="gh-navigation-menu">
+            <Nav items={site.navigation} />
+        </nav>
+
+        <div class="gh-navigation-actions">
+            <SearchToggle />
+        </div>
+    </div>
+</header>
