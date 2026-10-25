@@ -53,7 +53,8 @@ link/image checks (`npm run verify`) and deploys to GitHub Pages.
 ```
 src/content/legacy/   posts migrated from Ghost (pre-rendered HTML; don't hand-edit unless needed)
 src/content/posts/    new Markdown posts, by language
-src/site.config.ts    title, navigation, author, theme options
+src/site.config.ts    title, navigation, author, theme options (incl. dark-mode colours)
+src/styles/dark-mode.css  dark-theme overrides for colours Source hard-codes
 src/lib/ghost.ts      Ghost helper equivalents (img_url, excerpt, dates)
 public/content/images all images, same paths as on Ghost
 scripts/              importer, postbuild (image variants + search index), verify, new-post

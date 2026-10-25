@@ -4,6 +4,7 @@ import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import Lightbox from '../components/Lightbox.astro';
 import Search from '../components/Search.astro';
+import '../styles/dark-mode.css';
 import { site } from '../site.config';
 import { absoluteUrl } from '../lib/ghost';
 import { homeUrl, langs, type Alternates, type Lang } from '../lib/i18n';
@@ -68,21 +69,38 @@ const image = seo.image ? absoluteUrl(seo.image) : undefined;
             }
         </style>
         <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
-        <style is:inline set:html={`:root { --background-color: ${site.theme.siteBackgroundColor} }`} />
+        <style
+            is:inline
+            set:html={`:root { --background-color: ${site.theme.siteBackgroundColor} }
+:root[data-theme="dark"] { --background-color: ${site.theme.darkBackgroundColor} }`}
+        />
         <script is:inline>
-            /* The script for calculating the color contrast has been taken from
-            https://gomakethings.com/dynamically-changing-the-text-color-based-on-background-color-contrast-with-vanilla-js/ */
-            var accentColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
-            accentColor = accentColor.trim().slice(1);
-            if (accentColor.length === 3) {
-                accentColor = accentColor[0] + accentColor[0] + accentColor[1] + accentColor[1] + accentColor[2] + accentColor[2];
-            }
-            var r = parseInt(accentColor.substr(0, 2), 16);
-            var g = parseInt(accentColor.substr(2, 2), 16);
-            var b = parseInt(accentColor.substr(4, 2), 16);
-            var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-            var textColor = (yiq >= 128) ? 'dark' : 'light';
-            document.documentElement.className = `has-${textColor}-text`;
+            /* Light or dark: the visitor's saved choice, otherwise the OS setting.
+               Source's `has-light-text` class switches the theme's colour variables
+               for a dark background; dark-mode.css covers what it doesn't. */
+            (function () {
+                var root = document.documentElement;
+                var media = window.matchMedia('(prefers-color-scheme: dark)');
+                function saved() {
+                    try {
+                        return localStorage.getItem('theme');
+                    } catch (e) {
+                        return null;
+                    }
+                }
+                window.applyTheme = function (theme) {
+                    root.dataset.theme = theme;
+                    root.classList.toggle('has-light-text', theme === 'dark');
+                    root.classList.toggle('has-dark-text', theme !== 'dark');
+                    document.querySelectorAll('[data-theme-toggle]').forEach(function (btn) {
+                        btn.setAttribute('aria-pressed', String(theme === 'dark'));
+                    });
+                };
+                applyTheme(saved() || (media.matches ? 'dark' : 'light'));
+                media.addEventListener('change', function (e) {
+                    if (!saved()) applyTheme(e.matches ? 'dark' : 'light');
+                });
+            })();
         </script>
 
         {seo.description && <meta name="description" content={seo.description} />}
@@ -165,7 +183,11 @@ const image = seo.image ? absoluteUrl(seo.image) : undefined;
 
         <link rel="sitemap" href="/sitemap.xml" />
         <script defer src="/public/cards.min.js"></script>
-        <style is:inline set:html={`:root {--ghost-accent-color: ${site.accentColor};}`} />
+        <style
+            is:inline
+            set:html={`:root {--ghost-accent-color: ${site.accentColor};}
+:root[data-theme="dark"] {--ghost-accent-color: ${site.darkAccentColor};}`}
+        />
         <link rel="stylesheet" type="text/css" href="/public/cards.min.css" />
     </head>
     <body class={`${bodyClass} has-sans-title has-sans-body`}>

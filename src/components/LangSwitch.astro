@@ -60,7 +60,8 @@ const { lang, alternates } = Astro.props;
     }
     @media (max-width: 767px) {
         #gh-navigation .gh-navigation-brand {
-            grid-template-columns: 1fr auto auto auto;
+            /* logo, language, search, theme, menu */
+            grid-template-columns: 1fr auto auto auto auto;
         }
         .gh-navigation-actions .gh-lang-switch {
             display: none;

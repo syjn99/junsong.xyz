@@ -9,6 +9,8 @@ export const site = {
     coverImage:
         'https://images.unsplash.com/photo-1725113114049-31121918636c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMTc3M3wwfDF8YWxsfDIyfHx8fHx8Mnx8MTcyNTY5NjQ5MHw&ixlib=rb-4.0.3&q=80&w=2000',
     accentColor: '#02092a',
+    // Links, tags and quote bars in dark mode (the navy accent is unreadable there).
+    darkAccentColor: '#9db4ff',
     twitter: '@junsong_eth',
     postsPerPage: 12,
 
@@ -33,6 +35,7 @@ export const site = {
     // Source theme "Design" settings
     theme: {
         siteBackgroundColor: '#f4f4f4',
+        darkBackgroundColor: '#16181c',
         showPublishDate: true,
         showAuthor: false,
         showImagesInFeed: true,

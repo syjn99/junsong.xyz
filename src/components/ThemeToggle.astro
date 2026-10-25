@@ -1,0 +1,54 @@
+---
+// Light/dark switch. The theme itself is applied before paint by the inline
+// script in Base.astro; this button only flips it and remembers the choice.
+import Icon from './Icon.astro';
+---
+
+<button class="gh-theme-toggle gh-icon-button" aria-label="Toggle dark mode" data-theme-toggle>
+    <Icon name="moon" />
+    <Icon name="sun" />
+</button>
+
+<style is:global>
+    .gh-theme-toggle svg {
+        width: 20px;
+        height: 20px;
+    }
+    .gh-theme-toggle svg:last-child,
+    :root[data-theme='dark'] .gh-theme-toggle svg:first-child {
+        display: none;
+    }
+    :root[data-theme='dark'] .gh-theme-toggle svg:last-child {
+        display: block;
+    }
+    /* Same placement as the language switch: next to the logo on mobile,
+       in the right-hand actions on desktop. */
+    @media (max-width: 767px) {
+        .gh-navigation-actions .gh-theme-toggle {
+            display: none;
+        }
+    }
+    @media (min-width: 768px) {
+        .gh-navigation-brand .gh-theme-toggle {
+            display: none;
+        }
+    }
+</style>
+
+<script is:inline>
+    (function () {
+        var root = document.documentElement;
+        document.querySelectorAll('[data-theme-toggle]').forEach(function (btn) {
+            if (btn.dataset.bound) return;
+            btn.dataset.bound = '1';
+            btn.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
+            btn.addEventListener('click', function () {
+                var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+                try {
+                    localStorage.setItem('theme', next);
+                } catch (e) {}
+                window.applyTheme(next);
+            });
+        });
+    })();
+</script>

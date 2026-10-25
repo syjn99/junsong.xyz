@@ -1,0 +1,55 @@
+/* Dark mode. Base.astro sets data-theme="dark" plus Source's `has-light-text`
+   class, which already flips the text, border and tint variables; the dark
+   background and accent come from site.config.ts. This file covers the colours
+   Source and the Ghost card CSS hard-code for a light page. Light mode is
+   untouched. */
+
+:root[data-theme='dark'] {
+    color-scheme: dark;
+    --surface-color: #202227;
+    --color-light-gray: #2c2f35;
+    --color-mid-gray: #3b3f46;
+    --color-dark-gray: #b5b8bd;
+}
+
+/* Overflow menu that source.js builds when the nav doesn't fit. */
+:root[data-theme='dark'] .gh-dropdown {
+    background-color: var(--surface-color);
+    box-shadow:
+        0 0 0 1px var(--color-border),
+        0 7px 20px -5px rgba(0, 0, 0, 0.5);
+}
+:root[data-theme='dark'] .gh-dropdown li a {
+    color: var(--color-darker-gray) !important;
+}
+
+:root[data-theme='dark'] .gh-lang-switch a.is-active {
+    background-color: hsla(0, 0%, 100%, 0.14);
+    box-shadow: none;
+}
+
+/* Search dialog (Search.astro) and the Pagefind UI inside it. */
+:root[data-theme='dark'] .site-search {
+    background: var(--surface-color);
+    box-shadow:
+        0 0 0 1px var(--color-border),
+        0 24px 64px rgba(0, 0, 0, 0.6);
+}
+:root[data-theme='dark'] .site-search::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+}
+:root[data-theme='dark'] .site-search-panel {
+    --pagefind-ui-primary: #e8e9eb;
+    --pagefind-ui-text: #e8e9eb;
+    --pagefind-ui-background: var(--surface-color);
+    --pagefind-ui-border: var(--color-light-gray);
+    --pagefind-ui-tag: var(--color-light-gray);
+}
+:root[data-theme='dark'] .site-search .pagefind-ui__search-clear {
+    border: 0; /* unstyled button border turns white under color-scheme: dark */
+}
+
+/* A few diagrams are transparent PNGs drawn in black; give them a page to sit on. */
+:root[data-theme='dark'] .gh-content :is(.kg-image-card, .kg-gallery-image, p) > img {
+    background-color: #fff;
+}

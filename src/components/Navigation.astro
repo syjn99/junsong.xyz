@@ -4,6 +4,7 @@ import Icon from './Icon.astro';
 import SearchToggle from './SearchToggle.astro';
 import Nav from './Nav.astro';
 import LangSwitch from './LangSwitch.astro';
+import ThemeToggle from './ThemeToggle.astro';
 import { homeUrl, type Alternates, type Lang } from '../lib/i18n';
 import { site } from '../site.config';
 
@@ -20,6 +21,7 @@ const { lang, alternates } = Astro.props;
             <a class="gh-navigation-logo is-title" href={homeUrl(lang)} data-href-ko={homeUrl('ko')}>{site.title}</a>
             <LangSwitch lang={lang} alternates={alternates} />
             <SearchToggle />
+            <ThemeToggle />
             <button class="gh-burger gh-icon-button" aria-label="Menu">
                 <Icon name="burger" />
                 <Icon name="close" />
@@ -33,6 +35,7 @@ const { lang, alternates } = Astro.props;
         <div class="gh-navigation-actions">
             <LangSwitch lang={lang} alternates={alternates} />
             <SearchToggle />
+            <ThemeToggle />
         </div>
     </div>
 </header>
