@@ -51,7 +51,7 @@ export async function postSeo(post: Post): Promise<Seo> {
                 '@type': 'Organization',
                 name: site.title,
                 url: absoluteUrl('/'),
-                logo: { '@type': 'ImageObject', url: absoluteUrl('/favicon.ico'), width: 48, height: 48 },
+                logo: { '@type': 'ImageObject', url: absoluteUrl('/icon-192.png'), width: 192, height: 192 },
             },
             author: {
                 '@type': 'Person',

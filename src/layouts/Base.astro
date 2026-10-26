@@ -105,7 +105,9 @@ const image = seo.image ? absoluteUrl(seo.image) : undefined;
         </script>
 
         {seo.description && <meta name="description" content={seo.description} />}
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+        <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         {seo.noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
         {
             translated &&
