@@ -207,5 +207,15 @@ const image = seo.image ? absoluteUrl(seo.image) : undefined;
                 <script is:inline src={s.src} integrity={s.integrity} crossorigin="anonymous" referrerpolicy="no-referrer" />
             ))
         }
+        {
+            site.analytics.cloudflareToken && (
+                <script
+                    is:inline
+                    type="module"
+                    src="https://static.cloudflareinsights.com/beacon.min.js"
+                    data-cf-beacon={JSON.stringify({ token: site.analytics.cloudflareToken })}
+                />
+            )
+        }
     </body>
 </html>

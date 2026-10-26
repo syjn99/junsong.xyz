@@ -41,6 +41,12 @@ export const site = {
         categoryId: 'DIC_kwDOVUbk0c4DJjB-',
     },
 
+    // Cloudflare Web Analytics (cookieless). The token is public: it ends up in
+    // every page. Empty = no analytics script.
+    analytics: {
+        cloudflareToken: '99e2edc1fecd4f4180d6dc33b4aafcd8',
+    },
+
     // Source theme "Design" settings
     theme: {
         siteBackgroundColor: '#f4f4f4',
