@@ -6,8 +6,8 @@ export const site = {
     description: 'Diving into Core',
     locale: 'en',
     timezone: 'Asia/Seoul',
-    coverImage:
-        'https://images.unsplash.com/photo-1725113114049-31121918636c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMTc3M3wwfDF8YWxsfDIyfHx8fHx8Mnx8MTcyNTY5NjQ5MHw&ixlib=rb-4.0.3&q=80&w=2000',
+    // Unsplash photo 1725113114049-31121918636c, kept locally so social previews don't depend on Unsplash.
+    coverImage: '/content/images/site/cover.jpg',
     accentColor: '#02092a',
     // Links, tags and quote bars in dark mode (the navy accent is unreadable there).
     darkAccentColor: '#9db4ff',
@@ -26,7 +26,7 @@ export const site = {
     author: {
         slug: 'jun',
         name: 'Jun Song',
-        bio: 'I am...\n- Fascinated by Ethereum Core Protocols\n- Currently on a break from CS at KAIST"',
+        bio: 'I am...\n- Fascinated by Ethereum Core Protocols\n- Currently on a break from CS at KAIST',
         profileImage: '/content/images/2024/09/24382437_v642-nap-10-fastfood-min.jpg',
         location: 'Seoul',
         twitter: '@jun_song_over',

@@ -12,6 +12,23 @@ const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const legacyUrls = fs.readFileSync(path.join(ROOT, 'scripts/legacy-urls.txt'), 'utf8').split('\n').filter(Boolean);
 const BLOCKLIST = ['camisetatienda', 'restrictes.com', 'apple99.cc', 'ghost_once_footer', '/rce'];
 
+// Checking a dist/ left over from an earlier build would pass while the
+// current sources are broken (e.g. a failed `npm run build`).
+const newestSource = (dir) =>
+    fs.readdirSync(dir, { withFileTypes: true, recursive: true }).reduce((t, e) => {
+        if (!e.isFile()) return t;
+        return Math.max(t, fs.statSync(path.join(e.parentPath, e.name)).mtimeMs);
+    }, 0);
+const builtAt = fs.existsSync(path.join(DIST, 'index.html')) ? fs.statSync(path.join(DIST, 'index.html')).mtimeMs : 0;
+const sourcesAt = Math.max(...['src', 'public', 'astro.config.mjs'].map((p) => {
+    const abs = path.join(ROOT, p);
+    return fs.statSync(abs).isDirectory() ? newestSource(abs) : fs.statSync(abs).mtimeMs;
+}));
+if (builtAt < sourcesAt) {
+    console.error(builtAt ? 'dist/ is older than the sources: run `npm run build` first.' : 'No dist/: run `npm run build` first.');
+    process.exit(1);
+}
+
 let failures = 0;
 const fail = (msg) => {
     failures++;
