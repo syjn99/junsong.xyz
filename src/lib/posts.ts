@@ -1,6 +1,7 @@
 import { getCollection } from 'astro:content';
 import tagData from '../data/tags.json';
 import translationData from '../data/translations.json';
+import seriesData from '../data/series.json';
 import { site } from '../site.config';
 import { readingTime } from './reading-time.mjs';
 import { tagUrl, type Lang } from './i18n';
@@ -35,11 +36,27 @@ export interface Post {
     readingTime: string;
     // URL of the same post in the other language, if one exists.
     translation?: string;
+    series?: Series;
     publishedAt: Date;
     updatedAt: Date;
     metaTitle?: string;
     metaDescription?: string;
 }
+
+// A run of posts in one language, oldest first (src/data/series.json or `series:` front matter).
+export interface Series {
+    id: string;
+    name: string;
+    posts: { title: string; url: string }[];
+    // Position of the post this is attached to.
+    index: number;
+}
+
+const seriesDefs = seriesData as Record<string, { name: Record<Lang, string>; posts: string[] }>;
+const seriesBySlug = new Map(Object.entries(seriesDefs).flatMap(([id, s]) => s.posts.map((slug) => [slug, id] as const)));
+
+// `open-source` -> "Open Source"
+const nameFromSlug = (slug: string) => slug.replace(/(^|-)(\w)/g, (_, sep, c) => (sep ? ' ' : '') + c.toUpperCase());
 
 const tagsBySlug = new Map<string, Omit<Tag, 'url'>>((tagData as Omit<Tag, 'url'>[]).map((t) => [t.slug, t]));
 
@@ -48,8 +65,7 @@ export function resolveTag(slug: string, lang?: Lang): Tag {
     let tag = tagsBySlug.get(slug);
     if (!tag) {
         // New tag introduced by a Markdown post: name it after the slug.
-        const name = slug.replace(/(^|-)(\w)/g, (_, sep, c) => (sep ? ' ' : '') + c.toUpperCase());
-        tag = { slug, name };
+        tag = { slug, name: nameFromSlug(slug) };
         tagsBySlug.set(slug, tag);
     }
     return { ...tag, url: tagUrl(slug, lang) };
@@ -104,6 +120,8 @@ async function load(): Promise<Post[]> {
 
     // en slug -> ko slug, from translations.json and `translation:` front matter.
     const pairs = new Map<string, string>(Object.entries(translationData));
+    // Series ids from `series:` front matter.
+    const markdownSeries = new Map<Post, string>();
     const markdown = (await getCollection('posts', ({ data }) => import.meta.env.DEV || !data.draft)).map(
         (entry): Post => {
             const d = entry.data;
@@ -115,7 +133,7 @@ async function load(): Promise<Post[]> {
                 if (lang === 'en') pairs.set(slug, d.translation);
                 else pairs.set(d.translation, slug);
             }
-            return {
+            const post: Post = {
                 type: 'post',
                 slug,
                 lang,
@@ -136,6 +154,8 @@ async function load(): Promise<Post[]> {
                 publishedAt: d.date,
                 updatedAt: d.updated ?? d.date,
             };
+            if (d.series) markdownSeries.set(post, d.series);
+            return post;
         },
     );
 
@@ -154,6 +174,22 @@ async function load(): Promise<Post[]> {
         a.translation = b.url;
         b.translation = a.url;
     }
+
+    // Series: group by id and language, oldest first.
+    const runs = new Map<string, Post[]>();
+    for (const p of [...all].reverse()) {
+        const id = markdownSeries.get(p) ?? seriesBySlug.get(p.slug);
+        if (!id || p.type !== 'post') continue;
+        const key = `${id}/${p.lang}`;
+        runs.set(key, [...(runs.get(key) ?? []), p]);
+    }
+    for (const [key, posts] of runs) {
+        const [id, lang] = key.split('/') as [string, Lang];
+        const name = seriesDefs[id]?.name[lang] ?? nameFromSlug(id);
+        const list = posts.map((p) => ({ title: p.title, url: p.url }));
+        posts.forEach((p, index) => (p.series = { id, name, posts: list, index }));
+    }
+
     cache = all;
     return all;
 }

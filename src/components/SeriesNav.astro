@@ -1,0 +1,126 @@
+---
+// End-of-post box for posts in a series: every part in order, plus previous/next.
+import type { Series } from '../lib/posts';
+import { ui, type Lang } from '../lib/i18n';
+
+interface Props {
+    series: Series;
+    lang?: Lang;
+}
+const { series, lang = 'en' } = Astro.props;
+const t = ui[lang];
+const prev = series.posts[series.index - 1];
+const next = series.posts[series.index + 1];
+---
+
+<nav class="gh-series gh-canvas" aria-label={`${t.series}: ${series.name}`} data-pagefind-ignore>
+    <div class="gh-series-inner">
+        <p class="gh-series-label">{t.series} · {series.index + 1}/{series.posts.length}</p>
+        <h2 class="gh-series-title">{series.name}</h2>
+        <ol class="gh-series-list">
+            {
+                series.posts.map((p, i) => (
+                    <li>
+                        {i === series.index ? (
+                            <span aria-current="page">{p.title}</span>
+                        ) : (
+                            <a href={p.url}>{p.title}</a>
+                        )}
+                    </li>
+                ))
+            }
+        </ol>
+        <div class="gh-series-pager">
+            {
+                prev && (
+                    <a class="gh-series-prev" href={prev.url} rel="prev">
+                        <span>← {t.previous}</span>
+                        {prev.title}
+                    </a>
+                )
+            }
+            {
+                next && (
+                    <a class="gh-series-next" href={next.url} rel="next">
+                        <span>{t.next} →</span>
+                        {next.title}
+                    </a>
+                )
+            }
+        </div>
+    </div>
+</nav>
+
+<style is:global>
+    .gh-series {
+        margin-top: 64px;
+    }
+    .gh-series-inner {
+        padding: 28px 32px;
+        border-radius: 8px;
+        background-color: var(--color-lighter-gray);
+        font-size: 1.5rem;
+    }
+    .gh-series-label {
+        color: var(--color-secondary-text);
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+    }
+    .gh-series-title {
+        margin-top: 6px;
+        font-size: 2rem;
+        letter-spacing: -0.01em;
+    }
+    .gh-series-list {
+        margin: 16px 0 0;
+        padding-left: 2.2rem;
+        line-height: 1.5;
+    }
+    .gh-series-list li + li {
+        margin-top: 6px;
+    }
+    .gh-series-list a {
+        color: var(--color-secondary-text);
+    }
+    .gh-series-list a:hover {
+        color: var(--color-darker-gray);
+        opacity: 1;
+    }
+    .gh-series-list [aria-current] {
+        font-weight: 600;
+    }
+    .gh-series-pager {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--color-border);
+    }
+    .gh-series-pager:empty {
+        display: none;
+    }
+    .gh-series-pager a {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-weight: 600;
+        line-height: 1.35;
+    }
+    .gh-series-pager span {
+        color: var(--color-secondary-text);
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+    .gh-series-next {
+        grid-column: 2;
+        text-align: right;
+    }
+    @media (max-width: 767px) {
+        .gh-series-inner {
+            padding: 24px 20px;
+        }
+    }
+</style>

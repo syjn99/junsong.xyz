@@ -30,6 +30,7 @@ Front matter:
 | `feature_image_caption` | optional, HTML allowed |
 | `slug` | optional; defaults to the file name |
 | `translation` | optional; slug of the same post in the other language, e.g. `translation: my-post-ko` in `en/my-post.md`. Setting it on either side is enough |
+| `series` | optional; series id, e.g. `half-year-retrospect`. Posts sharing an id (per language) get a series box with previous/next at the end. Names and the migrated posts' membership are in `src/data/series.json` |
 | `draft` | `true` keeps it out of the production build |
 
 Images go in `public/content/images/<year>/<month>/` and are referenced as

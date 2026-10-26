@@ -67,6 +67,7 @@ draft: true
 | `featured` | `true`면 추천 글로 표시 |
 | `slug` | URL 이름. 없으면 파일 이름 |
 | `translation` | 다른 언어로 쓴 같은 글의 slug (아래 "번역본 연결") |
+| `series` | 시리즈 id. 예: `half-year-retrospect`, `monthly-contribution`, `open-source-work-log`. 같은 id·같은 언어의 글이 2개 이상이면 글 하단에 시리즈 목록과 이전/다음 글이 나온다. 새 id를 쓰면 이름은 id에서 만들어지고, 한국어 이름을 주려면 `src/data/series.json`에 추가한다 |
 | `draft` | `true`면 배포되지 않는다. `npm run dev`에서는 보인다 |
 
 ## 본문 작성

@@ -10,8 +10,24 @@ export const tagUrl = (slug: string, lang?: Lang) => `${langPrefix(lang)}/tag/${
 
 // Interface strings that change with the language.
 export const ui = {
-    en: { latest: 'Latest', seeAll: 'See all', readMore: 'Read more', search: 'Search posts, tags and authors' },
-    ko: { latest: '최신 글', seeAll: '전체 보기', readMore: '다른 글', search: '글, 태그 검색' },
+    en: {
+        latest: 'Latest',
+        seeAll: 'See all',
+        readMore: 'Read more',
+        search: 'Search posts, tags and authors',
+        series: 'Series',
+        previous: 'Previous',
+        next: 'Next',
+    },
+    ko: {
+        latest: '최신 글',
+        seeAll: '전체 보기',
+        readMore: '다른 글',
+        search: '글, 태그 검색',
+        series: '시리즈',
+        previous: '이전 글',
+        next: '다음 글',
+    },
 } satisfies Record<Lang, Record<string, string>>;
 
 // Where the switch sends you for each language.

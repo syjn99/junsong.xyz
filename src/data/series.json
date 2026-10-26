@@ -1,0 +1,36 @@
+{
+    "half-year-retrospect": {
+        "name": { "en": "Half-Year Retrospects", "ko": "반기 회고" },
+        "posts": [
+            "2023-h1-retrospect",
+            "2023-h2-retrospect",
+            "2024-h1-retrospect",
+            "challenges-of-2024",
+            "2025-h1-retrospect",
+            "2025-h2-retrospect",
+            "2026-h1-retrospect",
+            "2023-h1",
+            "2023-h2",
+            "2024-h1",
+            "about-challenge-ko",
+            "2025-h1",
+            "2025-h2",
+            "2026-h1"
+        ]
+    },
+    "monthly-contribution": {
+        "name": { "en": "Monthly Contribution", "ko": "월간 기여 기록" },
+        "posts": [
+            "open-source-2024-08",
+            "open-source-2024-09",
+            "open-source-2024-10",
+            "open-source-2024-11",
+            "open-source-2024-12",
+            "monthly-contribution-january-2025"
+        ]
+    },
+    "open-source-work-log": {
+        "name": { "en": "Open-Source Work Log", "ko": "오픈소스 작업록" },
+        "posts": ["open-source-work-log-1", "open-source-work-log-1-ko"]
+    }
+}

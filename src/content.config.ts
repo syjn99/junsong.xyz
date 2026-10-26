@@ -46,6 +46,8 @@ const posts = defineCollection({
         featured: z.boolean().default(false),
         // Slug of the same post in the other language (for the EN/KO switch).
         translation: z.string().optional(),
+        // Series id, e.g. `half-year-retrospect` (see src/data/series.json).
+        series: z.string().optional(),
         draft: z.boolean().default(false),
     }),
 });
