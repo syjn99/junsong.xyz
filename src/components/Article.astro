@@ -5,6 +5,7 @@ import FeatureImage from './FeatureImage.astro';
 import PostCard from './PostCard.astro';
 import Comments from './Comments.astro';
 import SeriesNav from './SeriesNav.astro';
+import CodeCopy from './CodeCopy.astro';
 import { getPosts, postClass, type Post } from '../lib/posts';
 import { postSeo } from '../lib/seo';
 import { formatDate, imgUrl, isoDate } from '../lib/ghost';
@@ -98,6 +99,7 @@ const authorUrl = `/author/${site.author.slug}/`;
             }
 
             <section class="gh-content gh-canvas is-body" data-pagefind-body set:html={post.html} />
+            {post.html.includes('<pre') && <CodeCopy lang={post.lang} />}
             {post.series && post.series.posts.length > 1 && <SeriesNav series={post.series} lang={post.lang} />}
             {isPost && site.theme.showComments && <Comments lang={post.lang} />}
         </article>

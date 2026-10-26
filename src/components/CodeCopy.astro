@@ -1,0 +1,74 @@
+---
+// "Copy" button on every code block in the post body. Each <pre> is wrapped
+// so the button stays put while wide code scrolls sideways.
+import type { Lang } from '../lib/i18n';
+
+interface Props {
+    lang?: Lang;
+}
+const { lang = 'en' } = Astro.props;
+const labels = lang === 'ko' ? { copy: '복사', copied: '복사됨' } : { copy: 'Copy', copied: 'Copied' };
+---
+
+<script is:inline define:vars={{ labels }}>
+    document.querySelectorAll('.gh-content pre').forEach(function (pre) {
+        var wrap = document.createElement('div');
+        wrap.className = 'gh-code';
+        pre.parentNode.insertBefore(wrap, pre);
+        wrap.appendChild(pre);
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'gh-code-copy';
+        btn.textContent = labels.copy;
+        btn.addEventListener('click', function () {
+            var code = pre.querySelector('code') || pre;
+            navigator.clipboard.writeText(code.textContent).then(function () {
+                btn.textContent = labels.copied;
+                btn.classList.add('is-copied');
+                setTimeout(function () {
+                    btn.textContent = labels.copy;
+                    btn.classList.remove('is-copied');
+                }, 1500);
+            });
+        });
+        wrap.appendChild(btn);
+    });
+</script>
+
+<style is:global>
+    .gh-code {
+        position: relative;
+    }
+    .gh-code-copy {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 4px 10px;
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+        background-color: var(--background-color);
+        color: var(--color-secondary-text);
+        font-family: var(--font-sans);
+        font-size: 1.2rem;
+        font-weight: 500;
+        line-height: 1.4;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+    }
+    .gh-code:hover .gh-code-copy,
+    .gh-code-copy:focus-visible,
+    .gh-code-copy.is-copied {
+        opacity: 1;
+    }
+    .gh-code-copy:hover {
+        color: var(--color-darker-gray);
+    }
+    /* No hover on touch screens: keep it visible. */
+    @media (hover: none) {
+        .gh-code-copy {
+            opacity: 1;
+        }
+    }
+</style>
