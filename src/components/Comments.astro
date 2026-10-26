@@ -1,0 +1,64 @@
+---
+// Comments via giscus: each post gets a GitHub Discussion in the site's repo,
+// matched by URL path. Readers sign in with GitHub to comment.
+import type { Lang } from '../lib/i18n';
+import { site } from '../site.config';
+
+interface Props {
+    lang?: Lang;
+}
+const { lang = 'en' } = Astro.props;
+const { comments } = site;
+---
+
+<section class="gh-comments gh-canvas" data-pagefind-ignore>
+    <div
+        class="giscus"
+        data-repo={comments.repo}
+        data-repo-id={comments.repoId}
+        data-category={comments.category}
+        data-category-id={comments.categoryId}
+        data-lang={lang}></div>
+</section>
+
+<script is:inline>
+    /* Loaded from script so giscus starts in the page's current theme
+       (decided in the browser, see Base.astro), and follows the toggle. */
+    (function () {
+        var root = document.documentElement;
+        var box = document.querySelector('.giscus');
+        var giscusTheme = function () {
+            return root.dataset.theme === 'dark' ? 'transparent_dark' : 'light';
+        };
+        var s = document.createElement('script');
+        s.src = 'https://giscus.app/client.js';
+        s.async = true;
+        s.crossOrigin = 'anonymous';
+        var attrs = {
+            repo: box.dataset.repo,
+            'repo-id': box.dataset.repoId,
+            category: box.dataset.category,
+            'category-id': box.dataset.categoryId,
+            // Strict: /2023-h1/ must not pick up the thread for /2023-h1-retrospect/.
+            mapping: 'pathname',
+            strict: '1',
+            'reactions-enabled': '1',
+            'emit-metadata': '0',
+            'input-position': 'bottom',
+            theme: giscusTheme(),
+            lang: box.dataset.lang,
+            loading: 'lazy',
+        };
+        Object.keys(attrs).forEach(function (k) {
+            s.setAttribute('data-' + k, attrs[k]);
+        });
+        box.appendChild(s);
+
+        document.addEventListener('themechange', function () {
+            var frame = document.querySelector('iframe.giscus-frame');
+            if (frame) {
+                frame.contentWindow.postMessage({ giscus: { setConfig: { theme: giscusTheme() } } }, 'https://giscus.app');
+            }
+        });
+    })();
+</script>

@@ -3,6 +3,7 @@
 import Base from '../layouts/Base.astro';
 import FeatureImage from './FeatureImage.astro';
 import PostCard from './PostCard.astro';
+import Comments from './Comments.astro';
 import { getPosts, postClass, type Post } from '../lib/posts';
 import { postSeo } from '../lib/seo';
 import { formatDate, imgUrl, isoDate } from '../lib/ghost';
@@ -96,6 +97,7 @@ const authorUrl = `/author/${site.author.slug}/`;
             }
 
             <section class="gh-content gh-canvas is-body" data-pagefind-body set:html={post.html} />
+            {isPost && site.theme.showComments && <Comments lang={post.lang} />}
         </article>
     </main>
 

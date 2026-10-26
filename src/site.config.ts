@@ -32,6 +32,15 @@ export const site = {
         twitter: '@jun_song_over',
     },
 
+    // giscus: comments live in this repo's Discussions ("Announcements", so only
+    // giscus and the repo owner can open threads). IDs from https://giscus.app
+    comments: {
+        repo: 'syjn99/junsong.xyz',
+        repoId: 'R_kgDOVUbk0Q',
+        category: 'Announcements',
+        categoryId: 'DIC_kwDOVUbk0c4DJjB-',
+    },
+
     // Source theme "Design" settings
     theme: {
         siteBackgroundColor: '#f4f4f4',
@@ -42,6 +51,7 @@ export const site = {
         showSidebar: true,
         showPostMetadata: true,
         showRelatedArticles: true,
+        showComments: true,
     },
 
     // Previously Ghost site-wide code injection (footer). Prism highlighting.

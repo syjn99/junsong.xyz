@@ -95,6 +95,7 @@ const image = seo.image ? absoluteUrl(seo.image) : undefined;
                     document.querySelectorAll('[data-theme-toggle]').forEach(function (btn) {
                         btn.setAttribute('aria-pressed', String(theme === 'dark'));
                     });
+                    document.dispatchEvent(new CustomEvent('themechange', { detail: theme }));
                 };
                 applyTheme(saved() || (media.matches ? 'dark' : 'light'));
                 media.addEventListener('change', function (e) {
